@@ -13,6 +13,7 @@ class uti:
         lis = natsorted(os.listdir('result'))
         if '0' not in lis and att == False:
             os.mkdir('result/0')
+            self.num = 0 
         if '0' in lis and att == False:
             self.num = int(lis[-1])+1
             os.mkdir(f'result/{self.num}')

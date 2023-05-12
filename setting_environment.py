@@ -54,8 +54,8 @@ class set_environment:
         random.shuffle(credentials)
         length_cred = len(credentials)
         self.superuser = credentials[0:int(length_cred*0.3)] #taking 3/10 as super cred
-        self.administrative = credentials[int(length_cred*0.3):int(length_cred*0.9)]#taking 6/10 as admin cred
-        self.user = credentials[int(length_cred*0.9):]#taking 1/10 as user cred
+        self.administrative = credentials[int(length_cred*0.3):int(length_cred*0.99)]#taking 6/10 as admin cred
+        self.user = credentials[int(length_cred*0.99):]#taking 1/10 as user cred
         self.credentials = credentials
     
     def setting_creds(self):
@@ -67,7 +67,7 @@ class set_environment:
         #cre88:........
         #cred100:......
         #########################################################################
-        self.generating_cred((self.machine_num*5))#the number of cred is machine * 5
+        self.generating_cred((self.machine_num*10))#the number of cred is machine * 10
         self.dict_of_supercred={}
         self.dict_of_admincred={}
         self.dict_of_usercred={}
@@ -76,26 +76,32 @@ class set_environment:
         for cred in self.superuser:
             len_of_user=int(len(self.user))
             len_of_admin=int(len(self.administrative))
-            temp=random.choices(self.user,k=random.randint(int(len_of_user*0.05),int(len_of_user*0.1)))
-            temp.extend(random.choices(self.administrative,k=random.randint(int(len_of_admin*0.02),int(len_of_admin*0.07))))
+            len_of_super=int(len(self.superuser))
+            temp=random.choices(self.user,k=random.randint(5,10))
+            temp.extend(random.choices(self.administrative,k=random.randint(5,10)))
+            temp.extend(random.choices(self.superuser,k=random.randint(5,10)))
             self.dict_of_supercred[cred]=temp
         
         for cred in self.administrative:
-            rand_num = random.randint(0,5)
+            rand_num = random.randint(0,10)
             len_of_user=int(len(self.user))
             len_of_admin=int(len(self.administrative))
-            temp=random.choices(self.user,k=random.randint(int(len_of_user*0.01),int(len_of_user*0.06)))
-            temp.extend(random.choices(self.administrative,k=random.randint(int(len_of_admin*0.01),int(len_of_admin*0.04))))
+            len_of_super=int(len(self.superuser))
+            temp=random.choices(self.user,k=random.randint(5,10))
+            # temp.extend(random.choices(self.administrative,k=random.randint(int(len_of_admin*0.01),int(len_of_admin*0.02))))
+            temp.extend(random.choices(self.administrative,k=random.randint(10,20)))
             if rand_num == 0:
-                temp.extend(random.choices(self.superuser,k=random.randint(int(len_of_admin*0.01),int(len_of_admin*0.1))))
+                temp.extend(random.choices(self.superuser,k=random.randint(5,10)))
             self.dict_of_admincred[cred]=temp
         
         for cred in self.user:
-            rand_num = random.randint(0,5)
+            rand_num = random.randint(0,10)
             len_of_user=int(len(self.user))
-            temp=random.choices(self.user,k=random.randint(int(len_of_user*0.01),int(len_of_user*0.06)))
+            # temp=random.choices(self.user,k=random.randint(int(len_of_user*0.01),int(len_of_user*0.03)))
+            temp=random.choices(self.user,k=random.randint(5,10))
             if rand_num == 0:
-                temp.extend(random.choices(self.administrative,k=random.randint(int(len_of_admin*0.01),int(len_of_admin*0.1))))
+                # temp.extend(random.choices(self.administrative,k=random.randint(int(len_of_admin*0.01),int(len_of_admin*0.1))))
+                temp.extend(random.choices(self.administrative,k=random.randint(10,20)))
             self.dict_of_usercred[cred]=temp
 
     def get_cred_dict(self):
@@ -123,12 +129,23 @@ class set_environment:
     def machine_randomly_choice_cred(self,machine,credlist):
         len_of_mach=len(machine)
         listDict = {}
+        credl = []
+
+
         for i in range(0, len_of_mach):
             listDict["Computer"+str(i)] = []
 
         # print(len_of_mach)
         for cred in credlist.items():
-            listDict[f'Computer{random.randint(0,len_of_mach-1)}'].append(cred)#not all computer #must be revsied
+            credl.append(cred)
+            ramd = random.randint(0,len_of_mach-1)
+            listDict[f'Computer{ramd}'].append(cred)
+        
+        # print(cred)
+        
+        for i in range(0, len_of_mach):
+            if listDict["Computer"+str(i)] == []:
+                listDict["Computer"+str(i)].append(random.choice(credl))
         
         
         
@@ -157,29 +174,32 @@ class set_environment:
         user_machine=[]
         degreee_of_nodes = sorted(self.G.degree, key=lambda x: x[1], reverse=True)
         for i,mach in enumerate(degreee_of_nodes): # according degree to assign the level of machines
-            if i < int(self.machine_num*0.05):
+            if i < int(self.machine_num*0.3):
                 supermachine.append(degreee_of_nodes[i][0])
-            if mach[1] >= 2 and i> int(self.machine_num*0.05):
+            if mach[1] >= 3 and i>= int(self.machine_num*0.3):
                 admin_machine.append(degreee_of_nodes[i][0])
-            if mach[1] == 1 and i> int(self.machine_num*0.05):
+            if mach[1] <= 2 and i>= int(self.machine_num*0.3):
                 user_machine.append(degreee_of_nodes[i][0])
         
         
         self.machine_randomly_choice_cred(supermachine,self.dict_of_supercred)
-        di=self.machine_randomly_choice_part(self.dict_of_admincred,0.2)
-        self.machine_randomly_choice_cred(supermachine,di)
+        di=self.machine_randomly_choice_part(self.dict_of_admincred,0.05)
+        self.machine_randomly_choice_cred(random.choices(supermachine,k = 7),di)
 
 
 
 
 
         self.machine_randomly_choice_cred(admin_machine,self.dict_of_admincred)
-        di=self.machine_randomly_choice_part(self.dict_of_usercred,0.1)
-        self.machine_randomly_choice_cred(admin_machine,di)
+        di=self.machine_randomly_choice_part(self.dict_of_usercred,0.05)
+        self.machine_randomly_choice_cred(random.choices(supermachine,k = 7),di)
 
         self.machine_randomly_choice_cred(user_machine,self.dict_of_usercred)
 
         self.user_machine = user_machine
+        # print(len(supermachine))
+        # print(len(admin_machine))
+        # print(len(user_machine))
 
 
 
