@@ -43,7 +43,7 @@ class uti:
             pickle.dump(G, f, pickle.HIGHEST_PROTOCOL) 
 
     def load_graph(self):
-        with open(f'result/{self.num}network_topo.gpickle', 'rb') as f:
+        with open(f'result/{self.num}/network_topo.gpickle', 'rb') as f:
             G = pickle.load(f)
 
             return G
