@@ -75,17 +75,22 @@ class attack:
                     # print(node)
                     for neighbor in self.G.neighbors(node):
                         klist=set()
-                        bfs_trace.append([node, neighbor,[*credlist]])
+                        store_list = set()
+                        original = set()
+                        original = [*credlist]
+                        # bfs_trace.append([node, neighbor,[*credlist]])
                         for k in self.G.nodes[neighbor].items():
                             if set([k[0]]).intersection(credlist):
                                 klist.update(k[0])
                                 output[node].append([neighbor,k[0],'Success'])
                                 credlist.update(k[1])
+                                store_list.update(k[1])
                                 # bfs_trace.append([node, neighbor,[*credlist]])
                                 if_in = True
                                 # print(f'{len(credlist)} cred in ')
                             # else:
                             #     output[node].append([neighbor,k[0],'Failed'])
+                        bfs_trace.append([node, neighbor,original,[*store_list]])
                         for cred in credlist:
                             if {cred}.isdisjoint(klist) :
                                 output[node].append([neighbor,cred,'Failed'])
@@ -152,21 +157,27 @@ class attack:
             for c in self.G.nodes[t[1]].items(): # get all cred in node t[1]
                 credll.update(c[1])
             credlll = [*credll]
+            # credlll = t[3]
             credlist = [*t[2]] # the creds attacker have
 
 
             # access = {k: [] for k in credlist}
-            access = np.zeros([len(credlist),len(credlll)])
 
-            for i, c in enumerate(credlist):
-                for j, cll in enumerate(credlll):
-                    if credd[c] == 0:
-                        access[i,j] = 1
-                    elif  credd[c] == 1:
-                        access[i,j] = round(random.uniform(0.9, 0.4), 2)
-                    elif  credd[c] == 2:
-                        access[i,j] = round(random.uniform(0.3, 0.1), 2)
-                    # access[c].append(temp)
+            if len(credlll) == 0:
+                access = np.zeros([1])
+                access[0] = None
+            
+            else:
+                access = np.zeros([len(credlist),len(credlll)])
+                for i, c in enumerate(credlist):
+                    for j, cll in enumerate(credlll):
+                        if credd[c] == 0:
+                            access[i,j] = 1
+                        elif  credd[c] == 1:
+                            access[i,j] = round(random.uniform(0.9, 0.4), 2)
+                        elif  credd[c] == 2:
+                            access[i,j] = round(random.uniform(0.3, 0.1), 2)
+                        # access[c].append(temp)
 
             return access
 
@@ -202,7 +213,7 @@ class attack:
             print(prin)
             prin+=1
 
-            if len(all_trace) >= 1:
+            if len(all_trace) >= 300:
                 save_name = rf'probability/{count}'
                 self.loader.save_as_pickle(all_trace,save_name)
                 # with open(f'test/{count}.pickle', 'wb') as f:
