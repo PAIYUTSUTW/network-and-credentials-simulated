@@ -77,9 +77,9 @@ class set_environment:
             len_of_user=int(len(self.user))
             len_of_admin=int(len(self.administrative))
             len_of_super=int(len(self.superuser))
-            temp=random.choices(self.user,k=random.randint(5,10))
-            temp.extend(random.choices(self.administrative,k=random.randint(5,10)))
-            temp.extend(random.choices(self.superuser,k=random.randint(5,10)))
+            temp=random.choices(self.user,k=random.randint(5,25))
+            temp.extend(random.choices(self.administrative,k=random.randint(5,25)))
+            temp.extend(random.choices(self.superuser,k=random.randint(5,25)))
             self.dict_of_supercred[cred]=temp
         
         for cred in self.administrative:
@@ -87,21 +87,21 @@ class set_environment:
             len_of_user=int(len(self.user))
             len_of_admin=int(len(self.administrative))
             len_of_super=int(len(self.superuser))
-            temp=random.choices(self.user,k=random.randint(5,10))
+            temp=random.choices(self.user,k=random.randint(5,25))
             # temp.extend(random.choices(self.administrative,k=random.randint(int(len_of_admin*0.01),int(len_of_admin*0.02))))
-            temp.extend(random.choices(self.administrative,k=random.randint(10,20)))
+            temp.extend(random.choices(self.administrative,k=random.randint(10,25)))
             if rand_num == 0:
-                temp.extend(random.choices(self.superuser,k=random.randint(5,10)))
+                temp.extend(random.choices(self.superuser,k=random.randint(5,25)))
             self.dict_of_admincred[cred]=temp
         
         for cred in self.user:
             rand_num = random.randint(0,10)
             len_of_user=int(len(self.user))
             # temp=random.choices(self.user,k=random.randint(int(len_of_user*0.01),int(len_of_user*0.03)))
-            temp=random.choices(self.user,k=random.randint(5,10))
+            temp=random.choices(self.user,k=random.randint(5,25))
             if rand_num == 0:
                 # temp.extend(random.choices(self.administrative,k=random.randint(int(len_of_admin*0.01),int(len_of_admin*0.1))))
-                temp.extend(random.choices(self.administrative,k=random.randint(10,20)))
+                temp.extend(random.choices(self.administrative,k=random.randint(10,25)))
             self.dict_of_usercred[cred]=temp
 
     def get_cred_dict(self):
