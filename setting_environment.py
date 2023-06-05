@@ -126,7 +126,7 @@ class set_environment:
         return random.randint(start,end)
 
     
-    def machine_randomly_choice_cred(self,machine,credlist):
+    def machine_randomly_choice_cred(self,machine,credlist,issuper=True):
         len_of_mach=len(machine)
         listDict = {}
         credl = []
@@ -152,6 +152,12 @@ class set_environment:
         for m,di in zip(machine,listDict.items()):
             for j in range(len(di[1])):
                 self.G.nodes[m][di[1][j][0]] = di[1][j][1]
+        
+        if issuper == False:
+            for m in machine:
+                super = random.choices(self.superuser,k=random.randint(1,3))
+                for s in super:
+                    self.G.nodes[m][s] = []
 
         # return listDict
 
@@ -182,24 +188,34 @@ class set_environment:
                 user_machine.append(degreee_of_nodes[i][0])
         
         
-        self.machine_randomly_choice_cred(supermachine,self.dict_of_supercred)
+        # self.machine_randomly_choice_cred(supermachine,self.dict_of_supercred)
         di=self.machine_randomly_choice_part(self.dict_of_admincred,0.05)
         self.machine_randomly_choice_cred(random.choices(supermachine,k = 7),di)
-
-
-
-
-
-        self.machine_randomly_choice_cred(admin_machine,self.dict_of_admincred)
         di=self.machine_randomly_choice_part(self.dict_of_usercred,0.05)
         self.machine_randomly_choice_cred(random.choices(supermachine,k = 7),di)
+        
+        self.machine_randomly_choice_cred(admin_machine,self.dict_of_admincred,False) 
+        self.machine_randomly_choice_cred(user_machine,self.dict_of_usercred,False)
+        self.machine_randomly_choice_cred(supermachine,self.dict_of_supercred)
 
-        self.machine_randomly_choice_cred(user_machine,self.dict_of_usercred)
+        super_set = set(self.superuser)
+        for n in self.G.nodes():
+            temp = set()
+            for t in list(self.G.nodes[n].values()):
+                temp.update(t)
+            for c in self.G.nodes[n].items():
+                if set([c[0]]).intersection(super_set):
+                    self.G.nodes[n][c[0]] = [*temp]
+                res = [*set(self.G.nodes[n][c[0]])]
+                self.G.nodes[n][c[0]] = res
 
         self.user_machine = user_machine
+
         # print(len(supermachine))
         # print(len(admin_machine))
         # print(len(user_machine))
+
+        
 
 
 
