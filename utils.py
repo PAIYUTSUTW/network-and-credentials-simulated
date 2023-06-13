@@ -49,3 +49,29 @@ class uti:
             G = pickle.load(f)
 
             return G
+    
+    def get_degrees(self,G):
+        degreee_of_nodes = sorted(G.degree, key=lambda x: x[1], reverse=True)
+
+        return degreee_of_nodes
+    
+    def get_hop(self,G):
+        degree = self.get_degrees(G)
+        hop_lengths = nx.single_source_shortest_path_length(G, degree[0][0])
+        self.save_as_pickle(hop_lengths,'hop')
+
+        return hop_lengths
+    
+    def get_cred_in_comp(self,G):
+        dict_comp_cred = {}
+        for g in list(G.nodes()):
+            temp = set()
+            for i in G.nodes[g].items():
+                temp.update(set(i[1]))
+                # print(len(i[1]))
+            dict_comp_cred[g] = [*temp]
+
+        self.save_as_pickle(dict_comp_cred,'comp_cred')
+
+        return dict_comp_cred
+

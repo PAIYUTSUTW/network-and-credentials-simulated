@@ -17,6 +17,7 @@ class set_environment:
         self.distributing_creds()
         self.loader = utils.uti()
         self.loader.dump_graph(self.G)
+        self.loader.get_hop(self.G)
         # self.save_creddict_as_csv()
 
 
