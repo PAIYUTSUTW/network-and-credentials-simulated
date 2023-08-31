@@ -2,16 +2,21 @@ import random
 import networkx as nx
 import numpy as np
 import utils
+import pickle
 class set_environment:
     def __init__(self, machine_num):
         
-        self.machine_num = machine_num
-        self.ramdomly_building_edge()
+        #self.machine_num = machine_num
+        #self.ramdomly_building_edge()
 
 
 
         # self.G = nx.random_internet_as_graph(self.machine_num)
         # self.ramdomly_building_edge_AS()
+        
+        with open(f'result/Enterprise_graph/set_target_as_enterprise.gpickle', 'rb') as f:
+            G = pickle.load(f)
+        self.machine_num = len(list(G.nodes()))
         
         self.setting_creds()
         self.distributing_creds()
@@ -55,8 +60,8 @@ class set_environment:
         random.shuffle(credentials)
         length_cred = len(credentials)
         self.superuser = credentials[0:int(length_cred*0.3)] #taking 3/10 as super cred
-        self.administrative = credentials[int(length_cred*0.3):int(length_cred*0.99)]#taking 6/10 as admin cred
-        self.user = credentials[int(length_cred*0.99):]#taking 1/10 as user cred
+        self.administrative = credentials[int(length_cred*0.3):int(length_cred*0.6)]#taking 6/10 as admin cred
+        self.user = credentials[int(length_cred*0.6):]#taking 1/10 as user cred
         self.credentials = credentials
     
     def setting_creds(self):
@@ -186,6 +191,13 @@ class set_environment:
             if mach[1] >= 3 and i>= int(self.machine_num*0.3):
                 admin_machine.append(degreee_of_nodes[i][0])
             if mach[1] <= 2 and i>= int(self.machine_num*0.3):
+                user_machine.append(degreee_of_nodes[i][0])
+        for i,mach in enumerate(degreee_of_nodes):
+            if degreee_of_nodes[i][0] == 'EnterpriseAppServer':
+                supermachine.append(degreee_of_nodes[i][0])
+            if degreee_of_nodes[i][0] == 'VPN' or degreee_of_nodes[i][1] >= 5:
+                admin_machine.append(degreee_of_nodes[i][0])
+            if degreee_of_nodes[i][1] < 5:
                 user_machine.append(degreee_of_nodes[i][0])
         
         
