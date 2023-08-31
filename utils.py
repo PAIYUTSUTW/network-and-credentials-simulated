@@ -4,6 +4,7 @@ import pandas as pd
 import os
 import networkx as nx
 from natsort import natsorted
+import pandas
 
 class uti:
     def __init__(self,att=False):
