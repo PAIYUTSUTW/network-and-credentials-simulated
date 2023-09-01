@@ -15,8 +15,8 @@ class set_environment:
         # self.ramdomly_building_edge_AS()
         
         with open(f'result/Enterprise_graph/set_target_as_enterprise.gpickle', 'rb') as f:
-            G = pickle.load(f)
-        self.machine_num = len(list(G.nodes()))
+            self.G = pickle.load(f)
+        self.machine_num = len(list(self.G.nodes()))
         
         self.setting_creds()
         self.distributing_creds()
