@@ -11,7 +11,8 @@ class uti:
         if not os.path.isdir('result'):
                 os.mkdir('result')
 
-        lis = natsorted(os.listdir('result'))
+        numeric_elements = natsorted(os.listdir('result'))
+        lis =  [element for element in numeric_elements if element.strip().lstrip('-').replace('.', '', 1).isdigit()]
         if '0' not in lis and att == False:
             os.mkdir('result/0')
             os.mkdir('result/0/probability')

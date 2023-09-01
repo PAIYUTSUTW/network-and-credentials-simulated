@@ -22,7 +22,8 @@ class set_environment:
         self.distributing_creds()
         self.loader = utils.uti()
         self.loader.dump_graph(self.G)
-        self.loader.get_hop(self.G)
+        # self.loader.get_hop(self.G)
+        self.get_cred_dict_and_machine()
         # self.save_creddict_as_csv()
 
 
@@ -110,10 +111,13 @@ class set_environment:
                 temp.extend(random.choices(self.administrative,k=random.randint(10,25)))
             self.dict_of_usercred[cred]=temp
 
-    def get_cred_dict(self):
+    def get_cred_dict_and_machine(self):
         self.loader.save_as_pickle(self.dict_of_supercred,'highest_level_credential')
         self.loader.save_as_pickle(self.dict_of_admincred,'middle_level_credential')
         self.loader.save_as_pickle(self.dict_of_usercred,'lowest_level_credential')
+        self.loader.save_as_pickle(self.supermachine,'supermachine')
+        self.loader.save_as_pickle(self.admin_machine,'admin_machine')
+        self.loader.save_as_pickle(self.user_machine,'user_machine')
         return self.dict_of_supercred, self.dict_of_admincred, self.dict_of_usercred
     
     # def save_creddict_as_csv(self):
@@ -186,13 +190,13 @@ class set_environment:
         user_machine=[]
         degreee_of_nodes = sorted(self.G.degree, key=lambda x: x[1], reverse=True)
         for i,mach in enumerate(degreee_of_nodes): # according degree to assign the level of machines
-            if i < int(self.machine_num*0.3):
-                supermachine.append(degreee_of_nodes[i][0])
-            if mach[1] >= 3 and i>= int(self.machine_num*0.3):
-                admin_machine.append(degreee_of_nodes[i][0])
-            if mach[1] <= 2 and i>= int(self.machine_num*0.3):
-                user_machine.append(degreee_of_nodes[i][0])
-        for i,mach in enumerate(degreee_of_nodes):
+            # if i < int(self.machine_num*0.3):
+            #     supermachine.append(degreee_of_nodes[i][0])
+            # if mach[1] >= 3 and i>= int(self.machine_num*0.3):
+            #     admin_machine.append(degreee_of_nodes[i][0])
+            # if mach[1] <= 2 and i>= int(self.machine_num*0.3):
+            #     user_machine.append(degreee_of_nodes[i][0])
+        
             if degreee_of_nodes[i][0] == 'EnterpriseAppServer':
                 supermachine.append(degreee_of_nodes[i][0])
             if degreee_of_nodes[i][0] == 'VPN' or degreee_of_nodes[i][1] >= 5:
@@ -223,6 +227,8 @@ class set_environment:
                 self.G.nodes[n][c[0]] = res
 
         self.user_machine = user_machine
+        self.supermachine = supermachine
+        self.admin_machine = admin_machine
 
         # print(len(supermachine))
         # print(len(admin_machine))
