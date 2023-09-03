@@ -57,9 +57,9 @@ class uti:
 
         return degreee_of_nodes
     
-    def get_hop(self,G):
+    def get_hop(self,G,start_node):
         degree = self.get_degrees(G)
-        hop_lengths = nx.single_source_shortest_path_length(G, degree[0][0])
+        hop_lengths = nx.single_source_shortest_path_length(G, start_node)
         self.save_as_pickle(hop_lengths,'hop')
 
         return hop_lengths
