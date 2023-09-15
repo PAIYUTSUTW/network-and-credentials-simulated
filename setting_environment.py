@@ -14,16 +14,19 @@ class set_environment:
         # self.G = nx.random_internet_as_graph(self.machine_num)
         # self.ramdomly_building_edge_AS()
         
-        with open(f'result/Enterprise_graph/set_target_as_enterprise.gpickle', 'rb') as f:
+        with open(f'result/Enterprise_graph/set_target_as_enterprise_v2.gpickle', 'rb') as f:
             self.G = pickle.load(f)
         self.machine_num = len(list(self.G.nodes()))
         
-        self.setting_creds()
-        self.distributing_creds()
+        #self.setting_creds()
+        #self.distributing_creds()
+        self.load_and_distribute_cred_from_dataset()
+        print('ooo')
+        
         self.loader = utils.uti()
         self.loader.dump_graph(self.G)
         self.loader.get_hop(self.G,'EnterpriseAppServer')
-        self.get_cred_dict_and_machine()
+        #self.get_cred_dict_and_machine()
         self.loader.get_cred_in_comp(self.G)
         # self.save_creddict_as_csv()
 
@@ -234,8 +237,13 @@ class set_environment:
         # print(len(supermachine))
         # print(len(admin_machine))
         # print(len(user_machine))
-
-        
+    
+    def load_and_distribute_cred_from_dataset(self):
+        with open(rf'C:\Users\jerry\test\network-and-credentials-simulated\result\Enterprise_graph\cred_both_v2.pickle', 'rb') as f:
+            cred = pickle.load(f)
+        for i in list(self.G.nodes()):
+            for j in cred[f'{i}_cred_can_login']:
+                self.G.nodes[i][j]=cred[f'{i}_cred_on_comp']
 
 
 
